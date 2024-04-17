@@ -1,3 +1,4 @@
+Original by https://github.com/Dantekk/Image-Captioning/tree/main
 # Image-Captioning
 Keras/Tensorflow Image Captioning application using CNN and Transformer as encoder/decoder. </br>
 In particulary, the architecture consists of three models:
