@@ -98,15 +98,15 @@ def read_image(data_aug):
     return decode_image
 
 img_transf = tf.keras.Sequential([
-            	tf.keras.layers.preprocessing.RandomContrast(factor=(0.05, 0.15)),
+            	tf.keras.layers.RandomContrast(factor=(0.05, 0.15)),
                 #image_aug.RandomBrightness(brightness_delta=(-0.15, 0.15)),
                 #image_aug.PowerLawTransform(gamma=(0.8,1.2)),
                 #image_aug.RandomSaturation(sat=(0, 2)),
                 #image_aug.RandomHue(hue=(0, 0.15)),
-                #tf.keras.layers.preprocessing.RandomFlip("horizontal"),
-	    	    tf.keras.layers.preprocessing.RandomTranslation(height_factor=(-0.10, 0.10), width_factor=(-0.10, 0.10)),
-		        tf.keras.layers.preprocessing.RandomZoom(height_factor=(-0.10, 0.10), width_factor=(-0.10, 0.10)),
-		        tf.keras.layers.preprocessing.RandomRotation(factor=(-0.10, 0.10))])
+                #tf.keras.layers.RandomFlip("horizontal"),
+	    	    tf.keras.layers.RandomTranslation(height_factor=(-0.10, 0.10), width_factor=(-0.10, 0.10)),
+		        tf.keras.layers.RandomZoom(height_factor=(-0.10, 0.10), width_factor=(-0.10, 0.10)),
+		        tf.keras.layers.RandomRotation(factor=(-0.10, 0.10))])
 
 def make_dataset(images, captions, data_aug, tokenizer):
     read_image_xx = read_image(data_aug)
