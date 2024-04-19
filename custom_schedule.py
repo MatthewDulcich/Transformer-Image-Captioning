@@ -10,6 +10,7 @@ class custom_schedule(tf.keras.optimizers.schedules.LearningRateSchedule):
 
    def __call__(self, step):
       arg1 = tf.math.rsqrt(tf.cast(step, tf.float32))
+      step = tf.cast(step, tf.int64)
       arg2 = step * (self.warmup_steps ** -1.5)
       return tf.math.rsqrt(self.d_model) * tf.math.minimum(arg1, arg2)
 
