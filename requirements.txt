@@ -1,0 +1,4 @@
+tensorflow
+# tensorflow-gpu
+numpy
+h5py
