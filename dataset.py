@@ -3,7 +3,7 @@ import os
 import math
 import numpy as np
 import tensorflow as tf
-import tensorflow_addons as tfa
+# import tensorflow_addons as tfa
 from settings import *
 import image_aug
 
