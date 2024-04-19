@@ -6,7 +6,7 @@ from utility import save_tokenizer
 import json
 import tensorflow as tf
 from tensorflow import keras
-from tensorflow.keras.layers.experimental.preprocessing import TextVectorization
+from tensorflow.keras.layers import TextVectorization
 import numpy as np
 
 

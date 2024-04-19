@@ -1,5 +1,5 @@
 import tensorflow as tf
-from tensorflow.keras.layers.experimental.preprocessing import TextVectorization
+from tensorflow.keras.layers import TextVectorization
 from custom_schedule import custom_schedule
 from tensorflow import keras
 from model import get_cnn_model, TransformerEncoderBlock, TransformerDecoderBlock, ImageCaptioningModel
