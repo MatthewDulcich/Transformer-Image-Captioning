@@ -13,7 +13,7 @@ FF_DIM = 1024
 # Shuffle dataset dim on tf.data.Dataset
 SHUFFLE_DIM = 512
 # Batch size
-BATCH_SIZE = 64
+BATCH_SIZE = 16 # 64
 # Numbers of training epochs
 EPOCHS = 14
 

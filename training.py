@@ -10,6 +10,9 @@ from tensorflow.keras.layers import TextVectorization
 import numpy as np
 
 
+print(tf.__version__)
+print("Num GPUs Available: ", len(tf.config.list_physical_devices('GPU')))
+
 # Load dataset
 with open(train_data_json_path) as json_file:
     train_data = json.load(json_file)
