@@ -74,7 +74,7 @@ early_stopping = keras.callbacks.EarlyStopping(patience=3, restore_best_weights=
 
 # Create a learning rate schedule
 lr_scheduler = custom_schedule(EMBED_DIM)
-optimizer = keras.optimizers.legacy.Adam(learning_rate=lr_scheduler, beta_1=0.9, beta_2=0.98, epsilon=1e-9)
+optimizer = tf.keras.optimizers.Adam(learning_rate=lr_scheduler, beta_1=0.9, beta_2=0.98, epsilon=1e-9)
 
 # Compile the model
 caption_model.compile(optimizer=optimizer, loss=cross_entropy)
