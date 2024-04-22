@@ -15,7 +15,7 @@ SHUFFLE_DIM = 512
 # Batch size
 BATCH_SIZE = 16 # 64
 # Numbers of training epochs
-EPOCHS = 5
+EPOCHS = 20
 
 # Reduce Dataset
 # If you want reduce number of train/valid images dataset, set 'REDUCE_DATASET=True'
