@@ -10,7 +10,7 @@ from tensorflow.keras.layers import TextVectorization
 import numpy as np
 
 
-print(tf.__version__)
+print('tensorflow version: ', tf.__version__)
 print("Num GPUs Available: ", len(tf.config.list_physical_devices('GPU')))
 
 # Load dataset
