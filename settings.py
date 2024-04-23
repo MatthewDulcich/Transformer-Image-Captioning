@@ -13,7 +13,7 @@ FF_DIM = 1024
 # Shuffle dataset dim on tf.data.Dataset
 SHUFFLE_DIM = 512
 # Batch size
-BATCH_SIZE = 16 # 64
+BATCH_SIZE = 32 # 64
 # Numbers of training epochs
 EPOCHS = 14
 
@@ -23,13 +23,13 @@ EPOCHS = 14
 #### COCO dataset
 # Max number train dataset images : 68363
 # Max number valid dataset images : 33432
-REDUCE_DATASET = False
+REDUCE_DATASET = True
 # Number of train images -> it must be a value between [1, 68363]
-NUM_TRAIN_IMG = 68363
+NUM_TRAIN_IMG = 20000 # 68363
 # Number of valid images -> it must be a value between [1, 33432]
 # N.B. -> IMPORTANT : the number of images of the test set is given by the difference between 33432 and NUM_VALID_IMG values.
 # for instance, with NUM_VALID_IMG = 20000 -> valid set have 20000 images and test set have the last 13432 images.
-NUM_VALID_IMG = 20000
+NUM_VALID_IMG = 6000 # 20000
 # Data augumention on train set
 TRAIN_SET_AUG = True
 # Data augmention on valid set
