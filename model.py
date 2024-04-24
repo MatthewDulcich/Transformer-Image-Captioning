@@ -260,8 +260,6 @@ class ImageCaptioningModel(keras.Model):
             caption_loss = self.calculate_loss(batch_seq_true, batch_seq_pred, mask)
             caption_acc = self.calculate_accuracy(batch_seq_true, batch_seq_pred, mask)
 
-            # Log loss and accuracy to wandb
-            wandb.log({"test_caption_loss": float(caption_loss), "test_caption_acc": float(caption_acc)})
             # 7. Update the batch loss and batch accuracy
             batch_loss += caption_loss
             batch_acc += caption_acc
