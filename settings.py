@@ -25,11 +25,11 @@ EPOCHS = 14
 # Max number valid dataset images : 33432
 REDUCE_DATASET = True
 # Number of train images -> it must be a value between [1, 68363]
-NUM_TRAIN_IMG = 20000 # 68363
+NUM_TRAIN_IMG = 200 # 68363
 # Number of valid images -> it must be a value between [1, 33432]
 # N.B. -> IMPORTANT : the number of images of the test set is given by the difference between 33432 and NUM_VALID_IMG values.
 # for instance, with NUM_VALID_IMG = 20000 -> valid set have 20000 images and test set have the last 13432 images.
-NUM_VALID_IMG = 6000 # 20000
+NUM_VALID_IMG = 60 # 20000
 # Data augumention on train set
 TRAIN_SET_AUG = True
 # Data augmention on valid set
