@@ -1,0 +1,1 @@
+{"Number of training samples": 2001, "Number of validation samples": 601, "_timestamp": 1713992007.136589, "_runtime": 358.7704360485077, "_step": 63, "batch_train_loss": 38.9030876159668, "_wandb": {"runtime": 361}}
