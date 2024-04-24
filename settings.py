@@ -11,11 +11,11 @@ NUM_HEADS = 6
 # Per-layer units in the feed-forward network
 FF_DIM = 1024
 # Shuffle dataset dim on tf.data.Dataset
-SHUFFLE_DIM = 512
+SHUFFLE_DIM = 1
 # Batch size
 BATCH_SIZE = 32 # 64
 # Numbers of training epochs
-EPOCHS = 14
+EPOCHS = 15
 
 # Reduce Dataset
 # If you want reduce number of train/valid images dataset, set 'REDUCE_DATASET=True'
