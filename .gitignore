@@ -170,3 +170,4 @@ test.ipynb
 wandb/
 save_train_dir/
 wandb/latest-run/
+settings.py
