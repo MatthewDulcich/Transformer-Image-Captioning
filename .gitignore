@@ -165,6 +165,8 @@ optimization.txt
 *.h5
 wandb/
 latest-run/
+settings.py
+test.ipynb
 wandb/
 save_train_dir/
 wandb/latest-run/
