@@ -9,23 +9,15 @@ from tensorflow import keras
 from tensorflow.keras.layers import TextVectorization
 import numpy as np
 import wandb
-from keras.callbacks import LambdaCallback
-
-# from wandb.keras import WandbCallback
-# from tensorflow.keras.callbacks import Callback
+from wandb.keras import WandbCallback
+from tensorflow.keras.callbacks import Callback
 
 class CustomWandbCallback(Callback): # TODO: Fix accuracy metric
     def on_train_batch_end(self, batch, logs=None):
         wandb.log({'train_loss': logs['loss'], 'train_accuracy': logs['accuracy']})
 
-#     def on_test_batch_end(self, batch, logs=None):
-#         wandb.log({'val_loss': logs['loss'], 'val_accuracy': logs['accuracy']})
-
-# Define the callback
-wandb_callback = LambdaCallback(
-    on_batch_end=lambda batch, logs: wandb.log({'batch_train_loss': logs['loss']})
-)
-
+    def on_test_batch_end(self, batch, logs=None):
+        wandb.log({'val_loss': logs['loss'], 'val_accuracy': logs['accuracy']})
 
 # Read the API key from the file
 with open('apikey.txt', 'r') as file:

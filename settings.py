@@ -11,7 +11,7 @@ NUM_HEADS = 6
 # Per-layer units in the feed-forward network
 FF_DIM = 1024
 # Shuffle dataset dim on tf.data.Dataset
-SHUFFLE_DIM = 1 # 512
+SHUFFLE_DIM = 1
 # Batch size
 BATCH_SIZE = 32 # 64
 # Numbers of training epochs
