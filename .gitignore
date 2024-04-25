@@ -163,3 +163,5 @@ cython_debug/
 apikey.txt
 optimization.txt
 *.h5
+save_train_dir/history.json
+wandb/latest-run
