@@ -1,0 +1,37 @@
+{
+    "os": "macOS-14.2.1-arm64-arm-64bit",
+    "python": "3.11.4",
+    "heartbeatAt": "2024-04-24T13:28:17.014737",
+    "startedAt": "2024-04-24T13:28:16.559834",
+    "docker": null,
+    "cuda": null,
+    "args": [],
+    "state": "running",
+    "program": "/Users/thilakcm/Downloads/UMD stuff/spring 2024/NLP/project/NLP641FinalProject/training.py",
+    "codePathLocal": "training.py",
+    "codePath": "training.py",
+    "git": {
+        "remote": "https://github.com/MatthewDulcich/NLP641FinalProject.git",
+        "commit": "e9dde849dce36cfc9671e4b7070c376858ab147c"
+    },
+    "email": null,
+    "root": "/Users/thilakcm/Downloads/UMD stuff/spring 2024/NLP/project/NLP641FinalProject",
+    "host": "wireless-10-104-138-82.umd.edu",
+    "username": "thilakcm",
+    "executable": "/Users/thilakcm/anaconda3/envs/ML-AI/bin/python",
+    "cpu_count": 8,
+    "cpu_count_logical": 8,
+    "disk": {
+        "/": {
+            "total": 228.27386474609375,
+            "used": 208.65988540649414
+        }
+    },
+    "gpuapple": {
+        "type": "arm",
+        "vendor": "Apple"
+    },
+    "memory": {
+        "total": 8.0
+    }
+}

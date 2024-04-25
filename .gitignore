@@ -162,3 +162,4 @@ cython_debug/
 *.jpg
 apikey.txt
 optimization.txt
+*.h5

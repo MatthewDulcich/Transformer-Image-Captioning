@@ -3,13 +3,13 @@ import os
 import certifi
 from tensorflow.keras import layers
 from tensorflow import keras
-from tensorflow.keras.applications import efficientnet
+from tensorflow.keras.applications import MobileNetV2
 from settings import *
 
 os.environ['SSL_CERT_FILE'] = certifi.where()
 
 def get_cnn_model():
-    base_model = efficientnet.EfficientNetB0(
+    base_model = MobileNetV2(
         input_shape=(*IMAGE_SIZE, 3), include_top=False, weights="imagenet",
     )
     # Freeze feature extractor layers

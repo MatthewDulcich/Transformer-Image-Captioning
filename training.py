@@ -14,12 +14,13 @@ from keras.callbacks import LambdaCallback
 # from wandb.keras import WandbCallback
 # from tensorflow.keras.callbacks import Callback
 
-# class CustomWandbCallback(Callback): # TODO: Fix accuracy metric
-#     def on_train_batch_end(self, batch, logs=None):
-#         wandb.log({'train_loss': logs['loss'], 'train_accuracy': logs['accuracy']})
 
-#     def on_test_batch_end(self, batch, logs=None):
-#         wandb.log({'val_loss': logs['loss'], 'val_accuracy': logs['accuracy']})
+class CustomWandbCallback(Callback): # TODO: Fix accuracy metric
+    def on_train_batch_end(self, batch, logs=None):
+        wandb.log({'train_loss': logs['loss'], 'train_accuracy': logs['accuracy']})
+
+    def on_test_batch_end(self, batch, logs=None):
+        wandb.log({'val_loss': logs['loss'], 'val_accuracy': logs['accuracy']})
 
 # Define the callback
 wandb_callback = LambdaCallback(
@@ -38,7 +39,7 @@ wandb.login(key=api_key)
 run = wandb.init(project='image-labeling-project', entity='dulcich')
 
 
-print(tf.__version__)
+print('tensorflow version: ', tf.__version__)
 print("Num GPUs Available: ", len(tf.config.list_physical_devices('GPU')))
 
 # Load dataset
