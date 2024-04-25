@@ -8,9 +8,29 @@ import tensorflow as tf
 from tensorflow import keras
 from tensorflow.keras.layers import TextVectorization
 import numpy as np
+import wandb
+# from wandb.keras import WandbCallback
+# from tensorflow.keras.callbacks import Callback
+
+# class CustomWandbCallback(Callback): # TODO: Fix accuracy metric
+#     def on_train_batch_end(self, batch, logs=None):
+#         wandb.log({'train_loss': logs['loss'], 'train_accuracy': logs['accuracy']})
+
+#     def on_test_batch_end(self, batch, logs=None):
+#         wandb.log({'val_loss': logs['loss'], 'val_accuracy': logs['accuracy']})
+
+# Read the API key from the file
+with open('apikey.txt', 'r') as file:
+    api_key = file.read().strip()
+
+# Login to wandb
+wandb.login(key=api_key)
+
+# Start a new run
+run = wandb.init(project='image-labeling-project', entity='dulcich')
 
 
-print('tensorflow version: ', tf.__version__)
+print(tf.__version__)
 print("Num GPUs Available: ", len(tf.config.list_physical_devices('GPU')))
 
 # Load dataset
@@ -26,6 +46,9 @@ if REDUCE_DATASET:
     train_data, valid_data = reduce_dataset_dim(train_data, valid_data)
 print("Number of training samples: ", len(train_data))
 print("Number of validation samples: ", len(valid_data))
+
+# Log the number of training and validation samples
+wandb.log({'Number of training samples': len(train_data), 'Number of validation samples': len(valid_data)})
 
 # Define tokenizer of Text Dataset
 tokenizer = TextVectorization(
@@ -74,7 +97,7 @@ early_stopping = keras.callbacks.EarlyStopping(patience=3, restore_best_weights=
 
 # Create a learning rate schedule
 lr_scheduler = custom_schedule(EMBED_DIM)
-optimizer = tf.keras.optimizers.Adam(learning_rate=lr_scheduler, beta_1=0.9, beta_2=0.98, epsilon=1e-9)
+optimizer = tf.keras.optimizers.Adam(learning_rate=lr_scheduler, beta_1=0.9, beta_2=0.98, epsilon=1e-9) # Changed to tf.keras.optimizers.Adam from keras.optimizers.Adam
 
 # Compile the model
 caption_model.compile(optimizer=optimizer, loss=cross_entropy)
@@ -88,8 +111,15 @@ history = caption_model.fit(train_dataset,
 # Compute definitive metrics on train/valid set
 train_metrics = caption_model.evaluate(train_dataset, batch_size=BATCH_SIZE)
 valid_metrics = caption_model.evaluate(valid_dataset, batch_size=BATCH_SIZE)
+wandb.log({'Train Loss': train_metrics[0], 'Train Accuracy': train_metrics[1],
+           'Valid Loss': valid_metrics[0], 'Valid Accuracy': valid_metrics[1]})
+
+
+
 if TEST_SET:
     test_metrics = caption_model.evaluate(test_dataset, batch_size=BATCH_SIZE)
+    wandb.log({'Test Loss': test_metrics[0], 'Test Accuracy': test_metrics[1]})
+
 
 print("Train Loss = %.4f - Train Accuracy = %.4f" % (train_metrics[0], train_metrics[1]))
 print("Valid Loss = %.4f - Valid Accuracy = %.4f" % (valid_metrics[0], valid_metrics[1]))
@@ -99,9 +129,11 @@ if TEST_SET:
 # Save training history under the form of a json file
 history_dict = history.history
 json.dump(history_dict, open(SAVE_DIR + 'history.json', 'w'))
+wandb.log({'history': history_dict})
 
 # Save weights model
 caption_model.save_weights(SAVE_DIR + 'model_weights_coco.h5')
+run.save(SAVE_DIR + 'model_weights_coco.h5')
 
 # Save config model train
 config_train = {"IMAGE_SIZE": IMAGE_SIZE,
@@ -118,3 +150,5 @@ json.dump(config_train, open(SAVE_DIR + 'config_train.json', 'w'))
 
 # Save Tokenizer model
 save_tokenizer(tokenizer, SAVE_DIR)
+
+run.finish()
