@@ -26,7 +26,7 @@ from keras.callbacks import LambdaCallback
 wandb_callback = LambdaCallback(
     on_batch_end=lambda batch, logs: wandb.log({'batch_train_loss': logs['loss']})
 )
-
+#added optimization comment
 
 # Read the API key from the file
 with open('apikey.txt', 'r') as file:
