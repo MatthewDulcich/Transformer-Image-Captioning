@@ -157,7 +157,7 @@ class ImageCaptioningModel(keras.Model):
     def call(self, inputs):
         x = self.cnn_model(inputs[0])
         x = self.encoder(x, False)
-        x = self.decoder(inputs[2],x,training=inputs[1],mask=None)
+        x = self.decoder(inputs[1],x,training=inputs[1],mask=None) # TODO: Potential fix change inputs[1] to False
         return x
     @tf.function
     def calculate_loss(self, y_true, y_pred, mask):

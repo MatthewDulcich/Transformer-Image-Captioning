@@ -144,8 +144,8 @@ for key, value_list in history.history.items():
         wandb.log({f'{key} {epoch}': value})
 
 # Save weights model
-caption_model.save_weights(SAVE_DIR + 'model_weights_coco.h5')
-run.save(SAVE_DIR + 'model_weights_coco.h5')
+caption_model.save_weights(SAVE_DIR + 'model_weights_coco.weights.h5')
+run.save(SAVE_DIR + 'model_weights_coco.weights.h5')
 
 # Save config model train
 config_train = {"IMAGE_SIZE": IMAGE_SIZE,
@@ -161,6 +161,6 @@ config_train = {"IMAGE_SIZE": IMAGE_SIZE,
 json.dump(config_train, open(SAVE_DIR + 'config_train.json', 'w'))
 
 # Save Tokenizer model
-save_tokenizer(tokenizer, SAVE_DIR)
+save_tokenizer(tokenizer, SAVE_DIR + 'tokenizer.keras')
 
 run.finish()
