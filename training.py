@@ -14,9 +14,9 @@ from keras.callbacks import LambdaCallback
 # from wandb.keras import WandbCallback
 # from tensorflow.keras.callbacks import Callback
 
-class CustomWandbCallback(Callback): # TODO: Fix accuracy metric
-    def on_train_batch_end(self, batch, logs=None):
-        wandb.log({'train_loss': logs['loss'], 'train_accuracy': logs['accuracy']})
+# class CustomWandbCallback(Callback): # TODO: Fix accuracy metric
+#     def on_train_batch_end(self, batch, logs=None):
+#         wandb.log({'train_loss': logs['loss'], 'train_accuracy': logs['accuracy']})
 
 #     def on_test_batch_end(self, batch, logs=None):
 #         wandb.log({'val_loss': logs['loss'], 'val_accuracy': logs['accuracy']})
