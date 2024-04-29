@@ -1,0 +1,49 @@
+{
+    "os": "macOS-14.4-arm64-arm-64bit",
+    "python": "3.11.9",
+    "heartbeatAt": "2024-04-24T21:05:39.081932",
+    "startedAt": "2024-04-24T21:05:38.614804",
+    "docker": null,
+    "cuda": null,
+    "args": [],
+    "state": "running",
+    "program": "/Users/matthewdulcich/Documents/DevProjects/Image-Captioning/training.py",
+    "codePathLocal": "training.py",
+    "codePath": "training.py",
+    "git": {
+        "remote": "https://github.com/MatthewDulcich/NLP641FinalProject.git",
+        "commit": "a9ef32defb2b10a32b3087f40d6e16fa2953b481"
+    },
+    "email": "61712797+MatthewDulcich@users.noreply.github.com",
+    "root": "/Users/matthewdulcich/Documents/DevProjects/Image-Captioning",
+    "host": "Matthews-MBP-5",
+    "username": "matthewdulcich",
+    "executable": "/Users/matthewdulcich/Documents/DevProjects/Image-Captioning/python3ll/bin/python",
+    "cpu_count": 10,
+    "cpu_count_logical": 10,
+    "cpu_freq": {
+        "current": 3228,
+        "min": 600,
+        "max": 3228
+    },
+    "cpu_freq_per_core": [
+        {
+            "current": 3228,
+            "min": 600,
+            "max": 3228
+        }
+    ],
+    "disk": {
+        "/": {
+            "total": 460.4317207336426,
+            "used": 10.113109588623047
+        }
+    },
+    "gpuapple": {
+        "type": "arm",
+        "vendor": "Apple"
+    },
+    "memory": {
+        "total": 16.0
+    }
+}
