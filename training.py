@@ -9,15 +9,23 @@ from tensorflow import keras
 from tensorflow.keras.layers import TextVectorization
 import numpy as np
 import wandb
-from wandb.keras import WandbCallback
-from tensorflow.keras.callbacks import Callback
+from keras.callbacks import LambdaCallback
+
+# from wandb.keras import WandbCallback
+# from tensorflow.keras.callbacks import Callback
 
 class CustomWandbCallback(Callback): # TODO: Fix accuracy metric
     def on_train_batch_end(self, batch, logs=None):
         wandb.log({'train_loss': logs['loss'], 'train_accuracy': logs['accuracy']})
 
-    def on_test_batch_end(self, batch, logs=None):
-        wandb.log({'val_loss': logs['loss'], 'val_accuracy': logs['accuracy']})
+#     def on_test_batch_end(self, batch, logs=None):
+#         wandb.log({'val_loss': logs['loss'], 'val_accuracy': logs['accuracy']})
+
+# Define the callback
+wandb_callback = LambdaCallback(
+    on_batch_end=lambda batch, logs: wandb.log({'batch_train_loss': logs['loss']})
+)
+
 
 # Read the API key from the file
 with open('apikey.txt', 'r') as file:
@@ -101,11 +109,13 @@ optimizer = tf.keras.optimizers.Adam(learning_rate=lr_scheduler, beta_1=0.9, bet
 
 # Compile the model
 caption_model.compile(optimizer=optimizer, loss=cross_entropy, metrics=["accuracy"])
+caption_model.compile(optimizer=optimizer, loss=cross_entropy, metrics=["accuracy"])
 
 # Fit the model
 history = caption_model.fit(train_dataset,
                             epochs=EPOCHS,
                             validation_data=valid_dataset,
+                            callbacks=[early_stopping, wandb_callback])
                             callbacks=[early_stopping, wandb_callback])
 
 # Compute definitive metrics on train/valid set
@@ -129,6 +139,10 @@ if TEST_SET:
 # Save training history under the form of a json file
 history_dict = history.history
 json.dump(history_dict, open(SAVE_DIR + 'history.json', 'w'))
+# Flatten the history dictionary and log each metric separately
+for key, value_list in history.history.items():
+    for epoch, value in enumerate(value_list):
+        wandb.log({f'{key} {epoch}': value})
 # Flatten the history dictionary and log each metric separately
 for key, value_list in history.history.items():
     for epoch, value in enumerate(value_list):
