@@ -13,7 +13,7 @@ def save_tokenizer(tokenizer, path_save):
     input = tf.keras.layers.Input(shape=(1,), dtype=tf.string)
     output = tokenizer(input)
     model = tf.keras.Model(input, output)
-    model.save(path_save + "tokenizer.tf")
+    model.save(path_save + "tokenizer.h5")
 
 def get_inference_model(model_config_path):
     with open(model_config_path) as json_file:
