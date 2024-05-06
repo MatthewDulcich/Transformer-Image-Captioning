@@ -13,7 +13,6 @@ from keras.callbacks import LambdaCallback
 
 # from wandb.keras import WandbCallback
 # from tensorflow.keras.callbacks import Callback
-# new comment
 
 # class CustomWandbCallback(Callback): # TODO: Fix accuracy metric
 #     def on_train_batch_end(self, batch, logs=None):
@@ -110,12 +109,14 @@ optimizer = tf.keras.optimizers.Adam(learning_rate=lr_scheduler, beta_1=0.9, bet
 
 # Compile the model
 caption_model.compile(optimizer=optimizer, loss=cross_entropy, metrics=["accuracy"])
+# caption_model.compile(optimizer=optimizer, loss=cross_entropy, metrics=["accuracy"])
 
 # Fit the model
 history = caption_model.fit(train_dataset,
                             epochs=EPOCHS,
                             validation_data=valid_dataset,
                             callbacks=[early_stopping, wandb_callback])
+                            # callbacks=[early_stopping, wandb_callback])
 
 # Compute definitive metrics on train/valid set
 train_metrics = caption_model.evaluate(train_dataset, batch_size=BATCH_SIZE)
@@ -138,6 +139,10 @@ if TEST_SET:
 # Save training history under the form of a json file
 history_dict = history.history
 json.dump(history_dict, open(SAVE_DIR + 'history.json', 'w'))
+# Flatten the history dictionary and log each metric separately
+for key, value_list in history.history.items():
+    for epoch, value in enumerate(value_list):
+        wandb.log({f'{key} {epoch}': value})
 # Flatten the history dictionary and log each metric separately
 for key, value_list in history.history.items():
     for epoch, value in enumerate(value_list):

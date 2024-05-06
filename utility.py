@@ -13,7 +13,7 @@ def save_tokenizer(tokenizer, path_save):
     input = tf.keras.layers.Input(shape=(1,), dtype=tf.string)
     output = tokenizer(input)
     model = tf.keras.Model(input, output)
-    model.save(path_save + "tokenizer", save_format='tf')
+    model.save(path_save + "tokenizer.h5")
 
 def get_inference_model(model_config_path):
     with open(model_config_path) as json_file:
@@ -39,7 +39,7 @@ def get_inference_model(model_config_path):
     cnn_input = tf.keras.layers.Input(shape=(IMAGE_SIZE[0], IMAGE_SIZE[1], 3))
     training = False
     decoder_input = tf.keras.layers.Input(shape=(None,))
-    caption_model([cnn_input, training, decoder_input])
+    caption_model([cnn_input, decoder_input])
     #####
 
     return caption_model
