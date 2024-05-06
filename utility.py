@@ -39,7 +39,7 @@ def get_inference_model(model_config_path):
     cnn_input = tf.keras.layers.Input(shape=(IMAGE_SIZE[0], IMAGE_SIZE[1], 3))
     training = False
     decoder_input = tf.keras.layers.Input(shape=(None,))
-    caption_model([cnn_input, training, decoder_input])
+    caption_model([cnn_input, decoder_input])
     #####
 
     return caption_model
