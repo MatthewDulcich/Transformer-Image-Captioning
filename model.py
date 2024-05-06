@@ -154,7 +154,10 @@ class ImageCaptioningModel(keras.Model):
     def call(self, inputs):
         x = self.cnn_model(inputs[0])
         x = self.encoder(x, training=False)  # Pass training as a keyword argument
+        # x = self.encoder(x, training=inputs[1]) # Pass training as a keyword argument
         x = self.decoder(inputs[1], x, training=False, mask=None)  # Pass training as a keyword argument
+        # x = self.decoder(inputs[2], x, training=inputs[1], mask=None) # Pass training as a keyword argument
+
         return x
 
     def calculate_loss(self, y_true, y_pred, mask):
