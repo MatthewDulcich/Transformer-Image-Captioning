@@ -64,6 +64,7 @@ tokenizer = TextVectorization(
     output_mode="int",
     output_sequence_length=SEQ_LENGTH,
     standardize=custom_standardization,
+    ngrams=1
 )
 
 # Adapt tokenizer to Text Dataset
