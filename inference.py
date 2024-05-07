@@ -23,4 +23,7 @@ with open(get_model_config_path) as json_file:
     model_config = json.load(json_file)
 
 text_caption = generate_caption(image_path, model, tokenizer, model_config["SEQ_LENGTH"])
+print("-"*100)
+print("-"*100)
+print("-"*100)
 print("PREDICTED CAPTION : %s" %(text_caption))

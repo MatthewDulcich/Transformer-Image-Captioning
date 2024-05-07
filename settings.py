@@ -1,9 +1,9 @@
 # Desired image dimensions
 IMAGE_SIZE = (299, 299)
 # Max vocabulary size
-MAX_VOCAB_SIZE = 2000000
+MAX_VOCAB_SIZE = 200000 # 2000000
 # Fixed length allowed for any sequence
-SEQ_LENGTH = 25
+SEQ_LENGTH = 10 # 25
 # Dimension for the image embeddings and token embeddings
 EMBED_DIM = 512
 # Number of self-attention heads
