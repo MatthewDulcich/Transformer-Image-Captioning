@@ -92,9 +92,9 @@ class TransformerDecoderBlock(layers.Layer):
 
     def call(self, inputs, encoder_outputs, training, mask=None):
         inputs = self.embedding(inputs)
-        causal_mask = self.get_causal_attention_mask(inputs)
         inputs = self.dropout_1(inputs, training=training)
 
+        causal_mask = self.get_causal_attention_mask(inputs)
         if mask is not None:
             padding_mask = tf.cast(mask[:, :, tf.newaxis], dtype=tf.int32)
             combined_mask = tf.cast(mask[:, tf.newaxis, :], dtype=tf.int32)
