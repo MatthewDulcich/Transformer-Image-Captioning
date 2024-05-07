@@ -85,7 +85,7 @@ class TransformerDecoderBlock(layers.Layer):
             embed_dim=EMBED_DIM, sequence_length=SEQ_LENGTH, vocab_size=self.vocab_size
         )
         self.out = layers.Dense(self.vocab_size)
-        self.dropout_1 = layers.Dropout(0.1)
+        self.dropout_1 = layers.Dropout(0.3)
         self.dropout_2 = layers.Dropout(0.5)
         self.supports_masking = True
 
@@ -106,7 +106,7 @@ class TransformerDecoderBlock(layers.Layer):
 
 
         attention_output_1 = self.attention_1(
-            query=inputs, value=inputs, key=inputs, attention_mask=combined_mask#None
+            query=inputs, value=inputs, key=inputs, attention_mask=combined_mask # None
         )
         out_1 = self.layernorm_1(inputs + attention_output_1)
 
