@@ -10,6 +10,10 @@ from tensorflow.keras.layers import TextVectorization
 import numpy as np
 import wandb
 from keras.callbacks import LambdaCallback
+from datetime import datetime
+from tensorflow.python.profiler import profiler_v2
+from tensorflow.python.keras.callbacks import TensorBoard
+
 
 # from wandb.keras import WandbCallback
 # from tensorflow.keras.callbacks import Callback
