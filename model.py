@@ -150,22 +150,23 @@ class ImageCaptioningModel(keras.Model):
         self.acc_tracker = keras.metrics.Mean(name="accuracy")
         self.num_captions_per_image = num_captions_per_image
 
-
+    @tf.function
     def call(self, inputs):
         x = self.cnn_model(inputs[0])
         x = self.encoder(x, training=False)  # Pass training as a keyword argument
         # x = self.encoder(x, training=inputs[1]) # Pass training as a keyword argument
         x = self.decoder(inputs[1], x, training=False, mask=None)  # Pass training as a keyword argument
         # x = self.decoder(inputs[2], x, training=inputs[1], mask=None) # Pass training as a keyword argument
-
         return x
 
+    @tf.function
     def calculate_loss(self, y_true, y_pred, mask):
         loss = self.loss(y_true, y_pred)
         mask = tf.cast(mask, dtype=loss.dtype)
         loss *= mask
         return tf.reduce_sum(loss) / tf.reduce_sum(mask)
 
+    @tf.function
     def calculate_accuracy(self, y_true, y_pred, mask):
         accuracy = tf.equal(y_true, tf.argmax(y_pred, axis=2))
         accuracy = tf.math.logical_and(mask, accuracy)
@@ -173,6 +174,7 @@ class ImageCaptioningModel(keras.Model):
         mask = tf.cast(mask, dtype=tf.float32)
         return tf.reduce_sum(accuracy) / tf.reduce_sum(mask)
 
+    @tf.function
     def train_step(self, batch_data):
         batch_img, batch_seq = batch_data
         batch_loss = 0
@@ -230,6 +232,7 @@ class ImageCaptioningModel(keras.Model):
         self.acc_tracker.update_state(acc)
         return {"loss": self.loss_tracker.result(), "acc": self.acc_tracker.result()}
 
+    @tf.function
     def test_step(self, batch_data):
         batch_img, batch_seq = batch_data
         batch_loss = 0
