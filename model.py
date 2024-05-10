@@ -228,7 +228,7 @@ class ImageCaptioningModel(keras.Model):
         self.loss_tracker.update_state(loss)
         self.acc_tracker.update_state(acc)
         return {"loss": self.loss_tracker.result(), "acc": self.acc_tracker.result()}
-    @tf.function
+    # @tf.function bad
     def test_step(self, batch_data):
         batch_img, batch_seq = batch_data
         batch_loss = 0
