@@ -28,11 +28,14 @@ def get_inference_model(model_config_path):
     encoder = TransformerEncoderBlock(
         embed_dim=EMBED_DIM, dense_dim=FF_DIM, num_heads=NUM_HEADS
     )
+    encoder2 = TransformerEncoderBlock(
+        embed_dim=EMBED_DIM, dense_dim=FF_DIM, num_heads=NUM_HEADS
+    )
     decoder = TransformerDecoderBlock(
         embed_dim=EMBED_DIM, ff_dim=FF_DIM, num_heads=NUM_HEADS, vocab_size=VOCAB_SIZE
     )
     caption_model = ImageCaptioningModel(
-        cnn_model=cnn_model, encoder=encoder, decoder=decoder
+        cnn_model=cnn_model, encoder=encoder, encoder2=encoder2, decoder=decoder
     )
 
     ##### It's necessary for init model -> without it, weights subclass model fails

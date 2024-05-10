@@ -139,11 +139,12 @@ class TransformerDecoderBlock(layers.Layer):
 
 class ImageCaptioningModel(keras.Model):
     def __init__(
-        self, cnn_model, encoder, decoder, num_captions_per_image=5,
+        self, cnn_model, encoder, encoder2, decoder, num_captions_per_image=5,
     ):
         super().__init__()
         self.cnn_model = cnn_model
         self.encoder = encoder
+        self.encoder2 = encoder2
         self.decoder = decoder
         self.loss_tracker = keras.metrics.Mean(name="loss")
         self.acc_tracker = keras.metrics.Mean(name="accuracy")
@@ -187,6 +188,7 @@ class ImageCaptioningModel(keras.Model):
             with tf.GradientTape() as tape:
                 # 3. Pass image embeddings to encoder
                 encoder_out = self.encoder(img_embed, training=True)
+                encoder_out2 = self.encoder2(encoder_out, training=True)  # New encoder block
 
                 batch_seq_inp = batch_seq[:, i, :-1]
                 batch_seq_true = batch_seq[:, i, 1:]
@@ -196,14 +198,14 @@ class ImageCaptioningModel(keras.Model):
 
                 # 5. Pass the encoder outputs, sequence inputs along with
                 # mask to the decoder
-                batch_seq_pred = self.decoder(
-                    batch_seq_inp, encoder_out, training=True, mask=mask
-                )
+                # batch_seq_pred1 = self.decoder(batch_seq_inp, encoder_out, training=True, mask=mask)
+                batch_seq_pred2 = self.decoder(batch_seq_inp, encoder_out2, training=True, mask=mask)  # New encoder block
+
 
                 # 6. Calculate loss and accuracy
-                caption_loss = self.calculate_loss(batch_seq_true, batch_seq_pred, mask)
+                caption_loss = self.calculate_loss(batch_seq_true, batch_seq_pred2, mask)
                 caption_acc = self.calculate_accuracy(
-                    batch_seq_true, batch_seq_pred, mask
+                    batch_seq_true, batch_seq_pred2, mask
                 )
 
                 # 7. Update the batch loss and batch accuracy
@@ -212,7 +214,7 @@ class ImageCaptioningModel(keras.Model):
 
             # 8. Get the list of all the trainable weights
             train_vars = (
-                self.encoder.trainable_variables + self.decoder.trainable_variables
+                self.encoder.trainable_variables + self.encoder2.trainable_variables + self.decoder.trainable_variables
             )
 
             # 9. Get the gradients
@@ -242,6 +244,7 @@ class ImageCaptioningModel(keras.Model):
         for i in range(self.num_captions_per_image):
             # 3. Pass image embeddings to encoder
             encoder_out = self.encoder(img_embed, training=False)
+            encoder_out2 = self.encoder2(encoder_out, training=False)  # New encoder block
 
             batch_seq_inp = batch_seq[:, i, :-1]
             batch_seq_true = batch_seq[:, i, 1:]
@@ -251,9 +254,10 @@ class ImageCaptioningModel(keras.Model):
 
             # 5. Pass the encoder outputs, sequence inputs along with
             # mask to the decoder
-            batch_seq_pred = self.decoder(
-                batch_seq_inp, encoder_out, training=False, mask=mask
-            )
+            # batch_seq_pred = self.decoder(
+            #     batch_seq_inp, encoder_out, training=False, mask=mask
+            # )
+            batch_seq_pred = self.decoder(batch_seq_inp, encoder_out2, training=False, mask=mask)  # New encoder block
 
             # 6. Calculate loss and accuracy
             caption_loss = self.calculate_loss(batch_seq_true, batch_seq_pred, mask)
