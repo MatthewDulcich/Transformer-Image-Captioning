@@ -14,20 +14,18 @@ from datetime import datetime
 from tensorflow.python.profiler import profiler_v2
 from tensorflow.python.keras.callbacks import TensorBoard
 
-
-# from wandb.keras import WandbCallback
-# from tensorflow.keras.callbacks import Callback
-
-# class CustomWandbCallback(Callback): # TODO: Fix accuracy metric
-#     def on_train_batch_end(self, batch, logs=None):
-#         wandb.log({'train_loss': logs['loss'], 'train_accuracy': logs['accuracy']})
-
-#     def on_test_batch_end(self, batch, logs=None):
-#         wandb.log({'val_loss': logs['loss'], 'val_accuracy': logs['accuracy']})
-
 # Define the callback
 wandb_callback = LambdaCallback(
-    on_batch_end=lambda batch, logs: wandb.log({'batch_train_loss': logs['loss']})
+    on_batch_end=lambda batch, logs: wandb.log({
+        'batch_train_loss': logs['loss'],
+        'batch_train_accuracy': logs['acc']
+    }),
+    on_epoch_end=lambda epoch, logs: wandb.log({
+        'epoch_train_loss': logs['loss'],
+        # 'epoch_train_accuracy': logs['acc'],
+        'epoch_valid_loss': logs.get('val_loss', None),
+        'epoch_valid_accuracy': logs.get('val_acc', None)
+    })
 )
 
 
@@ -147,13 +145,13 @@ if TEST_SET:
 history_dict = history.history
 json.dump(history_dict, open(SAVE_DIR + 'history.json', 'w'))
 # Flatten the history dictionary and log each metric separately
-for key, value_list in history.history.items():
-    for epoch, value in enumerate(value_list):
-        wandb.log({f'{key} {epoch}': value})
-# Flatten the history dictionary and log each metric separately
-for key, value_list in history.history.items():
-    for epoch, value in enumerate(value_list):
-        wandb.log({f'{key} {epoch}': value})
+# for key, value_list in history.history.items():
+#     for epoch, value in enumerate(value_list):
+#         wandb.log({f'{key} {epoch}': value})
+# # Flatten the history dictionary and log each metric separately
+# for key, value_list in history.history.items():
+#     for epoch, value in enumerate(value_list):
+#         wandb.log({f'{key} {epoch}': value})
 
 # Save weights model
 caption_model.save_weights(SAVE_DIR + 'model_weights_coco.weights.h5')
