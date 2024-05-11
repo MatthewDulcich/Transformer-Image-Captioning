@@ -175,3 +175,5 @@ save_train_dir/history.json
 coco.sh
 coco/
 path/
+fine_tuned_efficientnet.keras
+reshaped_finetuned_model.keras
