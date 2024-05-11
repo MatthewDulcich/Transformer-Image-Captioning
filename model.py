@@ -7,13 +7,16 @@ from tensorflow.keras.applications import efficientnet
 from settings import *
 
 def get_cnn_model():
-    base_model = efficientnet.EfficientNetB0(
-        input_shape=(*IMAGE_SIZE, 3), include_top=False, weights="imagenet")
-    # Freeze feature extractor layers
-    base_model.trainable = False
-    base_model_out = base_model.output
-    base_model_out = layers.Reshape((-1, 1280))(base_model_out)
-    cnn_model = keras.models.Model(base_model.input, base_model_out)
+    # base_model = efficientnet.EfficientNetB0(
+    #     input_shape=(*IMAGE_SIZE, 3), include_top=False, weights="imagenet")
+    # # Freeze feature extractor layers
+    # base_model.trainable = False
+    # base_model_out = base_model.output
+    # base_model_out = layers.Reshape((-1, 1280))(base_model_out)
+    # cnn_model = keras.models.Model(base_model.input, base_model_out)
+
+    # load reshaped_finetuned_model.keras model
+    cnn_model = keras.models.load_model('reshaped_finetuned_model.keras')
     return cnn_model
 
 class TransformerEncoderBlock(layers.Layer):
