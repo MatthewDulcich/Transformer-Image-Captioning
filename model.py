@@ -149,6 +149,7 @@ class ImageCaptioningModel(keras.Model):
         self.loss_tracker = keras.metrics.Mean(name="loss")
         self.acc_tracker = keras.metrics.Mean(name="accuracy")
         self.num_captions_per_image = num_captions_per_image
+        self.accumulation_steps = 5
 
     @tf.function
     def call(self, inputs):
@@ -231,6 +232,85 @@ class ImageCaptioningModel(keras.Model):
         self.loss_tracker.update_state(loss)
         self.acc_tracker.update_state(acc)
         return {"loss": self.loss_tracker.result(), "acc": self.acc_tracker.result()}
+
+
+    # # @tf.function
+    # def train_step(self, batch_data):
+    #     batch_img, batch_seq = batch_data
+    #     batch_loss = 0
+    #     batch_acc = 0
+
+    #     # Initialize accumulated gradients
+    #     accumulated_grads = [tf.zeros_like(w) for w in self.trainable_weights]
+
+    #     # 1. Get image embeddings
+    #     img_embed = self.cnn_model(batch_img)
+
+    #     # 2. Pass each of the five captions one by one to the decoder
+    #     # along with the encoder outputs and compute the loss as well as accuracy
+    #     # for each caption.
+    #     for i in range(self.num_captions_per_image):
+    #         with tf.GradientTape() as tape:
+    #              # 3. Pass image embeddings to encoder
+    #             encoder_out = self.encoder(img_embed, training=True)
+    #             encoder_out2 = self.encoder2(encoder_out, training=True)  # New encoder block
+
+    #             batch_seq_inp = batch_seq[:, i, :-1]
+    #             batch_seq_true = batch_seq[:, i, 1:]
+
+    #             # 4. Compute the mask for the input sequence
+    #             mask = tf.math.not_equal(batch_seq_inp, 0)
+
+    #             # 5. Pass the encoder outputs, sequence inputs along with
+    #             # mask to the decoder
+    #             # batch_seq_pred1 = self.decoder(batch_seq_inp, encoder_out, training=True, mask=mask)
+    #             batch_seq_pred2 = self.decoder(batch_seq_inp, encoder_out2, training=True, mask=mask)  # New encoder block
+
+    #             # 6. Calculate loss and accuracy
+    #             caption_loss = self.calculate_loss(batch_seq_true, batch_seq_pred2, mask)
+    #             caption_acc = self.calculate_accuracy(
+    #                 batch_seq_true, batch_seq_pred2, mask
+    #             )
+
+    #             # 7. Update the batch loss and batch accuracy
+    #             batch_loss += caption_loss
+    #             batch_acc += caption_acc
+
+    #             # 8. Get the list of all the trainable weights
+    #             train_vars = (
+    #                 self.encoder.trainable_variables + self.encoder2.trainable_variables + self.decoder.trainable_variables
+    #             )
+
+    #              # 9. Get the gradients
+    #             grads = tape.gradient(caption_loss, train_vars)
+
+    #             # Check if gradients are None or NaN
+    #             if any(g is None or tf.reduce_any(tf.math.is_nan(g)) for g in grads):
+    #                 raise ValueError("Gradients are None or NaN.")
+
+    #             # Accumulate gradients instead of applying them directly
+    #             accumulated_grads = [acc_g + g for acc_g, g in zip(accumulated_grads, grads)]
+
+    #         # Apply the accumulated gradients and reset them to zero every accumulation_steps
+    #         if (i + 1) % self.accumulation_steps == 0:
+    #             if any(g is None or tf.reduce_any(tf.math.is_nan(g)) for g in accumulated_grads):
+    #                 raise ValueError("Accumulated gradients are None or NaN.")
+    #             self.optimizer.apply_gradients(zip(accumulated_grads, train_vars))
+    #             accumulated_grads = [tf.zeros_like(w) for w in self.trainable_weights]
+
+    #     # Apply any remaining accumulated gradients
+    #     if accumulated_grads and any(tf.reduce_sum(g) for g in accumulated_grads):
+    #         self.optimizer.apply_gradients(zip(accumulated_grads, train_vars))
+
+    #     loss = batch_loss
+    #     acc = batch_acc / float(self.num_captions_per_image)
+    #     # Update the trackers
+    #     self.loss_tracker.update_state(loss)
+    #     self.acc_tracker.update_state(acc)
+
+    #     # Return the results
+    #     return {"loss": self.loss_tracker.result(), "acc": self.acc_tracker.result()}
+
 
     @tf.function
     def test_step(self, batch_data):
