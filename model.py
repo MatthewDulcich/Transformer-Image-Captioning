@@ -27,13 +27,15 @@ class TransformerEncoderBlock(layers.Layer):
         )
         self.dense_proj = layers.Dense(embed_dim, activation="relu")
         self.layernorm_1 = layers.LayerNormalization()
+        self.layernorm_2 = layers.LayerNormalization()
 
     def call(self, inputs, training, mask=None):
+        inputs = self.layernorm_1(inputs)
         inputs = self.dense_proj(inputs)
         attention_output = self.attention(
             query=inputs, value=inputs, key=inputs, attention_mask=None
         )
-        proj_input = self.layernorm_1(inputs + attention_output)
+        proj_input = self.layernorm_2(inputs + attention_output)
         return proj_input
 
 

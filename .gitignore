@@ -172,3 +172,6 @@ save_train_dir/
 wandb/latest-run/
 settings.py
 save_train_dir/history.json
+coco.sh
+coco/
+path/
