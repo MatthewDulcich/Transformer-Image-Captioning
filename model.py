@@ -160,12 +160,27 @@ class ImageCaptioningModel(keras.Model):
         # x = self.decoder(inputs[2], x, training=inputs[1], mask=None) # Pass training as a keyword argument
         return x
 
+    # @tf.function
+    # def calculate_loss(self, y_true, y_pred, mask):
+    #     loss = self.loss(y_true, y_pred)
+    #     mask = tf.cast(mask, dtype=loss.dtype)
+    #     loss *= mask
+    #     return tf.reduce_sum(loss) / tf.reduce_sum(mask)
+    
     @tf.function
     def calculate_loss(self, y_true, y_pred, mask):
         loss = self.loss(y_true, y_pred)
         mask = tf.cast(mask, dtype=loss.dtype)
         loss *= mask
-        return tf.reduce_sum(loss) / tf.reduce_sum(mask)
+
+        # Reshape the output of tf.argmax into a 1D tensor
+        y_pred_argmax = tf.reshape(tf.argmax(y_pred, axis=2), [-1])
+
+        # Compute penalty for repeated words
+        _, _, count = tf.unique_with_counts(y_pred_argmax)
+        penalty = tf.reduce_sum(tf.cast(count > 1, dtype=loss.dtype))
+
+        return tf.reduce_sum(loss) / tf.reduce_sum(mask) + (0.1 * penalty)
 
     @tf.function
     def calculate_accuracy(self, y_true, y_pred, mask):
