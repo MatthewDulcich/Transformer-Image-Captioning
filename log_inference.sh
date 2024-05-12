@@ -4,8 +4,11 @@
 echo "Enter the run name:"
 read run_name
 
+# Create the directory if it doesn't exist
+mkdir -p inference_logs
+
 # Start logging into a file named after the run
-log_file="${run_name}_run.log"
+log_file="inference_logs/${run_name}_run.log"
 exec > >(tee "$log_file") 2>&1
 
 # Display the contents of settings.py
