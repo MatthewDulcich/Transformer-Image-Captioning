@@ -7,13 +7,16 @@ from tensorflow.keras.applications import efficientnet
 from settings import *
 
 def get_cnn_model():
-    base_model = efficientnet.EfficientNetB0(
-        input_shape=(*IMAGE_SIZE, 3), include_top=False, weights="imagenet")
-    # Freeze feature extractor layers
-    base_model.trainable = False
-    base_model_out = base_model.output
-    base_model_out = layers.Reshape((-1, 1280))(base_model_out)
-    cnn_model = keras.models.Model(base_model.input, base_model_out)
+    # base_model = efficientnet.EfficientNetB0(
+    #     input_shape=(*IMAGE_SIZE, 3), include_top=False, weights="imagenet")
+    # # Freeze feature extractor layers
+    # base_model.trainable = False
+    # base_model_out = base_model.output
+    # base_model_out = layers.Reshape((-1, 1280))(base_model_out)
+    # cnn_model = keras.models.Model(base_model.input, base_model_out)
+
+    # load reshaped_finetuned_model.keras model
+    cnn_model = keras.models.load_model('reshaped_finetuned_model.keras')
     return cnn_model
 
 class TransformerEncoderBlock(layers.Layer):
@@ -27,13 +30,15 @@ class TransformerEncoderBlock(layers.Layer):
         )
         self.dense_proj = layers.Dense(embed_dim, activation="relu")
         self.layernorm_1 = layers.LayerNormalization()
+        self.layernorm_2 = layers.LayerNormalization()
 
     def call(self, inputs, training, mask=None):
+        inputs = self.layernorm_1(inputs)
         inputs = self.dense_proj(inputs)
         attention_output = self.attention(
             query=inputs, value=inputs, key=inputs, attention_mask=None
         )
-        proj_input = self.layernorm_1(inputs + attention_output)
+        proj_input = self.layernorm_2(inputs + attention_output)
         return proj_input
 
 

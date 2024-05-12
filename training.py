@@ -154,8 +154,8 @@ json.dump(history_dict, open(SAVE_DIR + 'history.json', 'w'))
 #         wandb.log({f'{key} {epoch}': value})
 
 # Save weights model
-caption_model.save_weights(SAVE_DIR + 'model_weights_coco.weights.h5')
-run.save(SAVE_DIR + 'model_weights_coco.weights.h5')
+caption_model.save_weights(SAVE_DIR + 'big_model_weights_coco.weights.h5')
+run.save(SAVE_DIR + 'big_model_weights_coco.weights.h5')
 
 # Save config model train
 config_train = {"IMAGE_SIZE": IMAGE_SIZE,
