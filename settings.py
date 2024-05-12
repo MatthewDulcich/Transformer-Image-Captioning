@@ -1,13 +1,13 @@
 # Desired image dimensions
 IMAGE_SIZE = (299, 299)
 # Max vocabulary size
-MAX_VOCAB_SIZE = 200000
+MAX_VOCAB_SIZE = 2000000
 # Fixed length allowed for any sequence
 SEQ_LENGTH = 12
 # Dimension for the image embeddings and token embeddings
 EMBED_DIM = 512
 # Number of self-attention heads
-NUM_HEADS = 8
+NUM_HEADS = 6
 # Per-layer units in the feed-forward network
 FF_DIM = 1024
 # Shuffle dataset dim on tf.data.Dataset
@@ -15,7 +15,7 @@ SHUFFLE_DIM = 1 # 512
 # Batch size
 BATCH_SIZE = 32
 # Numbers of training epochs
-EPOCHS = 1
+EPOCHS = 2
 
 # Reduce Dataset
 # If you want reduce number of train/valid images dataset, set 'REDUCE_DATASET=True'
@@ -25,11 +25,11 @@ EPOCHS = 1
 # Max number valid dataset images : 33432
 REDUCE_DATASET = True
 # Number of train images -> it must be a value between [1, 68363]
-NUM_TRAIN_IMG = 200 # 68363
+NUM_TRAIN_IMG = 20000 # 68363
 # Number of valid images -> it must be a value between [1, 33432]
 # N.B. -> IMPORTANT : the number of images of the test set is given by the difference between 33432 and NUM_VALID_IMG values.
 # for instance, with NUM_VALID_IMG = 20000 -> valid set have 20000 images and test set have the last 13432 images.
-NUM_VALID_IMG = 60 # 20000
+NUM_VALID_IMG = 6600 # 20000
 # Data augumention on train set
 TRAIN_SET_AUG = True
 # Data augmention on valid set
