@@ -13,8 +13,13 @@ from keras.callbacks import LambdaCallback
 from datetime import datetime
 from tensorflow.python.profiler import profiler_v2
 from tensorflow.python.keras.callbacks import TensorBoard
-
+# tf.config.run_functions_eagerly(True)
 # Define the callback
+
+# Set the policy
+tf.keras.mixed_precision.set_global_policy('mixed_float16')
+
+
 wandb_callback = LambdaCallback(
     on_batch_end=lambda batch, logs: wandb.log({
         'batch_train_loss': logs['loss'],
@@ -100,7 +105,7 @@ decoder = TransformerDecoderBlock(
     embed_dim=EMBED_DIM, ff_dim=FF_DIM, num_heads=NUM_HEADS, vocab_size=VOCAB_SIZE
 )
 caption_model = ImageCaptioningModel(
-    cnn_model=cnn_model, encoder=encoder, encoder2=encoder2, decoder=decoder
+    cnn_model=cnn_model, encoder=encoder, encoder2=encoder2, decoder=decoder #, tokenizer=tokenizer
 )
 
 # Define the loss function

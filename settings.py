@@ -5,17 +5,17 @@ MAX_VOCAB_SIZE = 800000 # 2000000
 # Fixed length allowed for any sequence
 SEQ_LENGTH = 20
 # Dimension for the image embeddings and token embeddings
-EMBED_DIM = 512
+EMBED_DIM = 512 # 512
 # Number of self-attention heads
 NUM_HEADS = 8
 # Per-layer units in the feed-forward network
-FF_DIM = 1024
+FF_DIM = 1024 # 1024
 # Shuffle dataset dim on tf.data.Dataset
-SHUFFLE_DIM = 1 # 512
+SHUFFLE_DIM = 128 # 512
 # Batch size
 BATCH_SIZE = 32 # 64
 # Numbers of training epochs
-EPOCHS = 20
+EPOCHS = 5
 
 # Reduce Dataset
 # If you want reduce number of train/valid images dataset, set 'REDUCE_DATASET=True'
@@ -25,17 +25,17 @@ EPOCHS = 20
 # Max number valid dataset images : 33432
 REDUCE_DATASET = True
 # Number of train images -> it must be a value between [1, 68363]
-NUM_TRAIN_IMG = 68363 # 68363
+NUM_TRAIN_IMG = 30000 # 68363
 # Number of valid images -> it must be a value between [1, 33432]
 # N.B. -> IMPORTANT : the number of images of the test set is given by the difference between 33432 and NUM_VALID_IMG values.
 # for instance, with NUM_VALID_IMG = 20000 -> valid set have 20000 images and test set have the last 13432 images.
-NUM_VALID_IMG = 20000 # 20000
+NUM_VALID_IMG = 10000 # 20000
 # Data augumention on train set
 TRAIN_SET_AUG = True
 # Data augmention on valid set
 VALID_SET_AUG = False
 # If you want to calculate the performance on the test set.
-TEST_SET = False
+TEST_SET = True
 
 # Load train_data.json pathfile
 train_data_json_path = "COCO_dataset/captions_mapping_train.json"

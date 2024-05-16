@@ -144,7 +144,7 @@ class TransformerDecoderBlock(layers.Layer):
 
 class ImageCaptioningModel(keras.Model):
     def __init__(
-        self, cnn_model, encoder, encoder2, decoder, num_captions_per_image=5,
+        self, cnn_model, encoder, encoder2, decoder, num_captions_per_image=5 # removed tokenizer
     ):
         super().__init__()
         self.cnn_model = cnn_model
@@ -155,6 +155,7 @@ class ImageCaptioningModel(keras.Model):
         self.acc_tracker = keras.metrics.Mean(name="accuracy")
         self.num_captions_per_image = num_captions_per_image
         self.accumulation_steps = 5
+        #self.tokenizer = tokenizer
 
     @tf.function
     def call(self, inputs):
@@ -172,7 +173,7 @@ class ImageCaptioningModel(keras.Model):
     #     loss *= mask
     #     return tf.reduce_sum(loss) / tf.reduce_sum(mask)
     
-    @tf.function
+    # @tf.function
     def calculate_loss(self, y_true, y_pred, mask):
         loss = self.loss(y_true, y_pred)
         mask = tf.cast(mask, dtype=loss.dtype)
@@ -182,10 +183,10 @@ class ImageCaptioningModel(keras.Model):
         y_pred_argmax = tf.reshape(tf.argmax(y_pred, axis=2), [-1])
 
         # Compute penalty for repeated words
-        _, _, count = tf.unique_with_counts(y_pred_argmax)
-        penalty = tf.reduce_sum(tf.cast(count > 1, dtype=loss.dtype))
+        # _, _, count = tf.unique_with_counts(y_pred_argmax)
+        # penalty = tf.reduce_sum(tf.cast(count > 1, dtype=loss.dtype))
 
-        return tf.reduce_sum(loss) / tf.reduce_sum(mask) + (0.1 * penalty)
+        return tf.reduce_sum(loss) / tf.reduce_sum(mask) #+ (0.3 * penalty)
 
     @tf.function
     def calculate_accuracy(self, y_true, y_pred, mask):
@@ -377,8 +378,87 @@ class ImageCaptioningModel(keras.Model):
         self.acc_tracker.update_state(acc)
         return {"loss": self.loss_tracker.result(), "acc": self.acc_tracker.result()}
 
+    # def test_step(self, batch_data):
+    #         batch_img, batch_seq = batch_data
+    #         batch_loss = 0
+    #         batch_acc = 0
+    #         predicted_captions=[]
+    #         true_captions=[]
+
+
+    #         # 1. Get image embeddings
+    #         img_embed = self.cnn_model(batch_img)
+
+    #         # 2. Pass each of the five captions one by one to the decoder
+    #         # along with the encoder outputs and compute the loss as well as accuracy
+    #         # for each caption.
+    #         for i in range(self.num_captions_per_image):
+    #             # 3. Pass image embeddings to encoder
+    #             encoder_out = self.encoder(img_embed, training=False)
+    #             encoder_out2 = self.encoder2(encoder_out, training=False)  # New encoder block
+
+    #             batch_seq_inp = batch_seq[:, i, :-1]
+    #             batch_seq_true = batch_seq[:, i, 1:]
+
+    #             # 4. Compute the mask for the input sequence
+    #             mask = tf.math.not_equal(batch_seq_inp, 0)
+
+    #             # 5. Pass the encoder outputs, sequence inputs along with
+    #             # mask to the decoder
+    #             # batch_seq_pred = self.decoder(
+    #             #     batch_seq_inp, encoder_out, training=False, mask=mask
+    #             # )
+    #             batch_seq_pred = self.decoder(batch_seq_inp, encoder_out2, training=False, mask=mask)  # New encoder block
+    #             predictions = self.decoder(batch_seq_inp, encoder_out2, training=False)
+    #             predicted_tokens=tf.argmax(predictions,axis=-1)
+
+    #             # 6. Calculate loss and accuracy
+    #             caption_loss = self.calculate_loss(batch_seq_true, batch_seq_pred, mask)
+    #             caption_acc = self.calculate_accuracy(batch_seq_true, batch_seq_pred, mask)
+
+    #             # 7. Update the batch loss and batch accuracy
+    #             batch_loss += caption_loss
+    #             batch_acc += caption_acc
+    #             # for pred,true in zip(predicted_tokens,batch_seq_inp):
+    #             #     # predicted_text = self.tokenizer.decode(pred.numpy())
+    #             #     # true_text = self.tokenizer.decode(true.numpy())
+    #             #     predicted_text = decode_numerical_tokens(pred.numpy(), self.tokenizer)
+    #             #     true_text = decode_numerical_tokens(true.numpy(), self.tokenizer)
+    #             #     predicted_captions.append(predicted_text)
+    #             #     true_captions.append(true_text)
+
+    #             predicted_tokens_list = tf.unstack(predicted_tokens)
+    #             batch_seq_inp_list = tf.unstack(batch_seq_inp)
+
+    #             for pred, true in zip(predicted_tokens_list, batch_seq_inp_list):
+    #                 predicted_text = tf.py_function(decode_numerical_tokens, [pred, self.tokenizer], tf.string)
+    #                 true_text = tf.py_function(decode_numerical_tokens, [true, self.tokenizer], tf.string)
+    #                 predicted_captions.append(predicted_text)
+    #                 true_captions.append(true_text)
+
+
+    #         loss = batch_loss
+    #         acc = batch_acc / float(self.num_captions_per_image)
+
+    #         self.loss_tracker.update_state(loss)
+    #         self.acc_tracker.update_state(acc)
+    #         return {"loss": self.loss_tracker.result(), "acc": self.acc_tracker.result(),'predicted_captions':predicted_captions,'true_captions':true_captions}
+
+
+
+
     @property
     def metrics(self):
         # We need to list our metrics here so the `reset_states()` can be
         # called automatically.
         return [self.loss_tracker, self.acc_tracker]
+
+def decode_numerical_tokens(numerical_tokens, vectorization_layer):
+    vocabulary = vectorization_layer.get_vocabulary()
+    words = [vocabulary[token] for token in numerical_tokens]
+    return ' '.join(words)
+
+def process_token(pred, true):
+    predicted_text = tf.py_function(decode_numerical_tokens, [pred, self.tokenizer], tf.string)
+    true_text = tf.py_function(decode_numerical_tokens, [true, self.tokenizer], tf.string)
+    return predicted_text, true_text
