@@ -1,3 +1,18 @@
+"""
+finetuning.py
+
+This module contains the code for fine-tuning an EfficientNetB0 model on the COCO dataset.
+
+It includes:
+- Functions to preprocess image paths and draw bounding boxes.
+- Code to load and preprocess the COCO dataset.
+- Code to define, compile, and train the model.
+- Code to save the trained model and plot the training history.
+- Code to reshape the model's output layer and save the reshaped model.
+
+The module uses TensorFlow for model definition and training, pandas for data manipulation, 
+matplotlib for plotting, cv2 for image processing, and wandb for logging training metrics.
+"""
 import json
 import os
 import pandas as pd
@@ -26,9 +41,27 @@ wandb.login(key=api_key)
 
 # Define functions to preprocess image paths and draw bounding boxes
 def add_zeros_and_extension(image_ids):
+    """
+    Add leading zeros and the .jpg extension to each image ID.
+
+    Args:
+        image_ids (list): The image IDs.
+
+    Returns:
+        list: The image IDs with leading zeros and the .jpg extension.
+    """
     return [f'{str(image_id).zfill(12)}.jpg' for image_id in image_ids]
 
 def draw_bounding_boxes(image_ids, anns_df, images_dir, num_images=5):
+    """
+    Draw bounding boxes on a random sample of images.
+
+    Args:
+        image_ids (list): The image IDs.
+        anns_df (pd.DataFrame): The DataFrame containing the annotations.
+        images_dir (str): The directory containing the images.
+        num_images (int, optional): The number of images to draw bounding boxes on. Defaults to 5.
+    """
     random_image_ids = random.sample(list(image_ids), num_images)
     fig, axes = plt.subplots(nrows=1, ncols=num_images, figsize=(20, 6))
     for i, image_id in enumerate(random_image_ids):
@@ -66,6 +99,16 @@ anns_df['file_name'] = image_dir + anns_df['file_name'].astype(str)
 
 # Define image processing functions
 def preprocess_image(image_path, label):
+    """
+    Preprocess an image for the model.
+
+    Args:
+        image_path (str): The path to the image.
+        label (int): The label of the image.
+
+    Returns:
+        tuple: The preprocessed image and its label.
+    """
     image = tf.io.read_file(image_path)
     image = tf.image.decode_jpeg(image, channels=3)
     image = tf.image.resize(image, (299, 299))

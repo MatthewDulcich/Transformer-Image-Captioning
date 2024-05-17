@@ -1,3 +1,17 @@
+"""
+inference.py
+
+This module contains the code for generating captions for images using a trained image captioning model.
+
+It includes:
+- Code to load the tokenizer and model.
+- Code to parse command line arguments for the image path.
+- Code to load the model configuration.
+- Code to generate a caption for the image and print it.
+
+The module uses TensorFlow for model loading and inference, json for configuration loading, 
+and argparse for command line argument parsing.
+"""
 from utility import  get_inference_model, generate_caption
 import json
 import tensorflow as tf

@@ -1,5 +1,9 @@
 #!/bin/bash
 
+# log_inference.sh
+# This script asks for a run name, creates a directory for inference logs if it doesn't exist,
+# starts logging into a file named after the run, displays the contents of settings.py, and runs the run_inference.sh script.
+
 # Ask for the run name
 echo "Enter the run name:"
 read run_name

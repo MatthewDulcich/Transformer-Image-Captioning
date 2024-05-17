@@ -1,3 +1,21 @@
+"""
+model.py
+
+This module contains the implementation of the image captioning model.
+
+It includes:
+- A function to load a pre-trained CNN model.
+- A Transformer Encoder Block class for the transformer architecture.
+- A Transformer Decoder Block class for the transformer architecture.
+- An ImageCaptioningModel class that combines the CNN model and the Transformer blocks.
+
+The CNN model is used for image feature extraction. The Transformer Encoder and Decoder Blocks are used for sequence modeling. The ImageCaptioningModel class combines these components into a complete model.
+
+The module uses TensorFlow for model creation and training.
+
+The settings for the model are imported from the settings module.
+"""
+
 import tensorflow as tf
 import os
 import certifi
@@ -7,6 +25,12 @@ from tensorflow.keras.applications import efficientnet
 from settings import *
 
 def get_cnn_model():
+    """
+    Function to load a pre-trained CNN model.
+
+    Returns:
+        keras.Model: Pre-trained CNN model.
+    """
     # base_model = efficientnet.EfficientNetB0(
     #     input_shape=(*IMAGE_SIZE, 3), include_top=False, weights="imagenet")
     # # Freeze feature extractor layers
@@ -20,6 +44,14 @@ def get_cnn_model():
     return cnn_model
 
 class TransformerEncoderBlock(layers.Layer):
+    """
+    Transformer Encoder Block class.
+
+    Args:
+        embed_dim (int): Dimension of the embedding.
+        dense_dim (int): Dimension of the dense layer.
+        num_heads (int): Number of attention heads.
+    """
     def __init__(self, embed_dim, dense_dim, num_heads, **kwargs):
         super().__init__(**kwargs)
         self.embed_dim = embed_dim
@@ -33,6 +65,17 @@ class TransformerEncoderBlock(layers.Layer):
         self.layernorm_2 = layers.LayerNormalization()
 
     def call(self, inputs, training, mask=None):
+        """
+        Call function for the Transformer Encoder Block.
+
+        Args:
+            inputs (Tensor): Input tensor.
+            training (bool): Whether the model is in training mode.
+            mask (Tensor, optional): Mask tensor. Defaults to None.
+
+        Returns:
+            Tensor: Output tensor.
+        """
         inputs = self.layernorm_1(inputs)
         inputs = self.dense_proj(inputs)
         attention_output = self.attention(
@@ -43,6 +86,14 @@ class TransformerEncoderBlock(layers.Layer):
 
 
 class PositionalEmbedding(layers.Layer):
+    """
+    Positional Embedding class.
+
+    Args:
+        sequence_length (int): Length of the sequence.
+        vocab_size (int): Size of the vocabulary.
+        embed_dim (int): Dimension of the embedding.
+    """
     def __init__(self, sequence_length, vocab_size, embed_dim, **kwargs):
         super().__init__(**kwargs)
         self.token_embeddings = layers.Embedding(
@@ -56,6 +107,15 @@ class PositionalEmbedding(layers.Layer):
         self.embed_dim = embed_dim
 
     def call(self, inputs):
+        """
+        Call function for the Positional Embedding.
+
+        Args:
+            inputs (Tensor): Input tensor.
+
+        Returns:
+            Tensor: Output tensor.
+        """
         length = tf.shape(inputs)[-1]
         positions = tf.range(start=0, limit=length, delta=1)
         embedded_tokens = self.token_embeddings(inputs)
@@ -63,10 +123,29 @@ class PositionalEmbedding(layers.Layer):
         return embedded_tokens + embedded_positions
 
     def compute_mask(self, inputs, mask=None):
+        """
+        Computes mask for the Positional Embedding.
+
+        Args:
+            inputs (Tensor): Input tensor.
+            mask (Tensor, optional): Mask tensor. Defaults to None.
+
+        Returns:
+            Tensor: Mask tensor.
+        """
         return tf.math.not_equal(inputs, 0)
 
 
 class TransformerDecoderBlock(layers.Layer):
+    """
+    Transformer Decoder Block class.
+
+    Args:
+        embed_dim (int): Dimension of the embedding.
+        ff_dim (int): Dimension of the feed forward layer.
+        num_heads (int): Number of attention heads.
+        vocab_size (int): Size of the vocabulary.
+    """
     def __init__(self, embed_dim, ff_dim, num_heads, vocab_size, **kwargs):
         super().__init__(**kwargs)
         self.embed_dim = embed_dim
@@ -96,6 +175,18 @@ class TransformerDecoderBlock(layers.Layer):
 
 
     def call(self, inputs, encoder_outputs, training, mask=None):
+        """
+        Call function for the Transformer Decoder Block.
+
+        Args:
+            inputs (Tensor): Input tensor.
+            encoder_outputs (Tensor): Output tensor from the encoder.
+            training (bool): Whether the model is in training mode.
+            mask (Tensor, optional): Mask tensor. Defaults to None.
+
+        Returns:
+            Tensor: Output tensor.
+        """
         inputs = self.embedding(inputs)
         inputs = self.dropout_1(inputs, training=training)
 
@@ -130,6 +221,15 @@ class TransformerDecoderBlock(layers.Layer):
         return preds
 
     def get_causal_attention_mask(self, inputs):
+        """
+        Computes the causal attention mask.
+
+        Args:
+            inputs (Tensor): Input tensor.
+
+        Returns:
+            Tensor: Causal attention mask.
+        """
         input_shape = tf.shape(inputs)
         batch_size, sequence_length = input_shape[0], input_shape[1]
         i = tf.range(sequence_length)[:, tf.newaxis]
@@ -143,9 +243,29 @@ class TransformerDecoderBlock(layers.Layer):
         return tf.tile(mask, mult)
 
 class ImageCaptioningModel(keras.Model):
+    """
+    Image Captioning Model class.
+
+    Args:
+        cnn_model (keras.Model): CNN model for image feature extraction.
+        encoder (keras.Layer): Encoder layer.
+        encoder2 (keras.Layer): Second encoder layer.
+        decoder (keras.Layer): Decoder layer.
+        num_captions_per_image (int, optional): Number of captions per image. Defaults to 5.
+    """
     def __init__(
         self, cnn_model, encoder, encoder2, decoder, num_captions_per_image=5 # removed tokenizer
     ):
+        """
+        Initialize the Image Captioning Model.
+
+        Args:
+            cnn_model (keras.Model): CNN model for image feature extraction.
+            encoder (keras.Layer): Encoder layer.
+            encoder2 (keras.Layer): Second encoder layer.
+            decoder (keras.Layer): Decoder layer.
+            num_captions_per_image (int, optional): Number of captions per image. Defaults to 5.
+        """
         super().__init__()
         self.cnn_model = cnn_model
         self.encoder = encoder
@@ -159,6 +279,15 @@ class ImageCaptioningModel(keras.Model):
 
     @tf.function
     def call(self, inputs):
+        """
+        Call function for the Image Captioning Model.
+
+        Args:
+            inputs (Tensor): Input tensor.
+
+        Returns:
+            Tensor: Output tensor.
+        """
         x = self.cnn_model(inputs[0])
         x = self.encoder(x, training=False)  # Pass training as a keyword argument
         # x = self.encoder(x, training=inputs[1]) # Pass training as a keyword argument
@@ -175,6 +304,17 @@ class ImageCaptioningModel(keras.Model):
     
     # @tf.function
     def calculate_loss(self, y_true, y_pred, mask):
+        """
+        Calculate the loss for the model.
+
+        Args:
+            y_true (Tensor): True labels.
+            y_pred (Tensor): Predicted labels.
+            mask (Tensor): Mask tensor.
+
+        Returns:
+            Tensor: Loss tensor.
+        """
         loss = self.loss(y_true, y_pred)
         mask = tf.cast(mask, dtype=loss.dtype)
         loss *= mask
@@ -190,6 +330,17 @@ class ImageCaptioningModel(keras.Model):
 
     @tf.function
     def calculate_accuracy(self, y_true, y_pred, mask):
+        """
+        Calculate the accuracy for the model.
+
+        Args:
+            y_true (Tensor): True labels.
+            y_pred (Tensor): Predicted labels.
+            mask (Tensor): Mask tensor.
+
+        Returns:
+            Tensor: Accuracy tensor.
+        """
         accuracy = tf.equal(y_true, tf.argmax(y_pred, axis=2))
         accuracy = tf.math.logical_and(mask, accuracy)
         accuracy = tf.cast(accuracy, dtype=tf.float32)
@@ -198,6 +349,15 @@ class ImageCaptioningModel(keras.Model):
 
     @tf.function
     def train_step(self, batch_data):
+        """
+        Perform one training step.
+
+        Args:
+            batch_data (tuple): Tuple of batch image and sequence data.
+
+        Returns:
+            dict: Dictionary with loss and accuracy.
+        """
         batch_img, batch_seq = batch_data
         batch_loss = 0
         batch_acc = 0
@@ -335,6 +495,15 @@ class ImageCaptioningModel(keras.Model):
 
     @tf.function
     def test_step(self, batch_data):
+        """
+        Perform one testing step.
+
+        Args:
+            batch_data (tuple): Tuple of batch image and sequence data.
+
+        Returns:
+            dict: Dictionary with loss and accuracy.
+        """
         batch_img, batch_seq = batch_data
         batch_loss = 0
         batch_acc = 0
@@ -449,16 +618,42 @@ class ImageCaptioningModel(keras.Model):
 
     @property
     def metrics(self):
+        """
+        List of the metrics to be tracked.
+
+        Returns:
+            list: List of metrics.
+        """
         # We need to list our metrics here so the `reset_states()` can be
         # called automatically.
         return [self.loss_tracker, self.acc_tracker]
 
 def decode_numerical_tokens(numerical_tokens, vectorization_layer):
+    """
+    Decode numerical tokens back to words.
+
+    Args:
+        numerical_tokens (list): List of numerical tokens to be decoded.
+        vectorization_layer (Layer): The vectorization layer used for encoding.
+
+    Returns:
+        str: Decoded string.
+    """
     vocabulary = vectorization_layer.get_vocabulary()
     words = [vocabulary[token] for token in numerical_tokens]
     return ' '.join(words)
 
 def process_token(pred, true):
+    """
+    Process predicted and true tokens to convert them into text.
+
+    Args:
+        pred (list): List of predicted numerical tokens.
+        true (list): List of true numerical tokens.
+
+    Returns:
+        tuple: Tuple of predicted and true text.
+    """
     predicted_text = tf.py_function(decode_numerical_tokens, [pred, self.tokenizer], tf.string)
     true_text = tf.py_function(decode_numerical_tokens, [true, self.tokenizer], tf.string)
     return predicted_text, true_text

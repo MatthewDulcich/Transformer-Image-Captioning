@@ -1,3 +1,23 @@
+"""
+settings.py
+
+This module contains configuration settings for the image captioning model.
+
+Settings include:
+- Desired image dimensions
+- Maximum vocabulary size
+- Fixed length allowed for any sequence
+- Dimension for the image embeddings and token embeddings
+- Number of self-attention heads
+- Per-layer units in the feed-forward network
+- Shuffle dataset dimension on tf.data.Dataset
+- Batch size
+- Numbers of training epochs
+- Dataset reduction settings
+- Data augmentation settings
+- Paths to train and validation data JSON files
+"""
+
 # Desired image dimensions
 IMAGE_SIZE = (299, 299)
 # Max vocabulary size

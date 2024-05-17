@@ -1,3 +1,19 @@
+"""
+training.py
+
+This module contains the training pipeline for the image captioning model.
+
+It includes:
+- Importing necessary modules and settings.
+- Defining a callback for logging training metrics with Weights & Biases (wandb).
+- Reading the API key for wandb from a file and logging in.
+- The main training script will be further down in the file (not shown in the excerpt).
+
+The module uses TensorFlow for model training, and Weights & Biases for logging training metrics.
+
+The settings for the model and the dataset are imported from the settings and dataset modules respectively. The model components are imported from the model module.
+"""
+
 from dataset import make_dataset, custom_standardization, reduce_dataset_dim, valid_test_split
 from settings import *
 from custom_schedule import custom_schedule

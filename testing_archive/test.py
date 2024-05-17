@@ -1,3 +1,7 @@
+"""
+This module just prints the version of tensorflow and the number of GPUs available.
+"""
+
 import tensorflow as tf
 
 print(tf.__version__)
