@@ -17,7 +17,7 @@ from tensorflow.python.keras.callbacks import TensorBoard
 # Define the callback
 
 # Set the policy
-tf.keras.mixed_precision.set_global_policy('mixed_float16')
+# tf.keras.mixed_precision.set_global_policy('mixed_float16')
 
 
 wandb_callback = LambdaCallback(
