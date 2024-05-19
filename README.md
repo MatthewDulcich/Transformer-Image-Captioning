@@ -1,26 +1,42 @@
 Original by https://github.com/Dantekk/Image-Captioning/tree/main
-# Image-Captioning
-Keras/Tensorflow Image Captioning application using CNN and Transformer as encoder/decoder. </br>
-In particulary, the architecture consists of three models:
-1. **A CNN**: used to extract the image features. In this application, it used EfficientNetB0 pre-trained on imagenet.
-2. **A TransformerEncoder**: the extracted image features are then passed to a Transformer encoder that generates a new representation of the inputs.
-3. **A TransformerDecoder**: it takes the encoder output and the text data sequence as inputs and tries to learn to generate the caption.
+
+# Image Captioning with CNN and Transformer
+
+This repository contains the implementation of an Image Captioning application using Keras/Tensorflow. The application uses a Convolutional Neural Network (CNN) and a Transformer as encoder/decoder. 
+
+## Architecture
+
+The architecture consists of three models:
+
+1. **A CNN**: EfficientNetB0 pre-trained on ImageNet is used to extract the image features.
+2. **A TransformerEncoder**: The extracted image features are then passed to a Transformer encoder that generates a new representation of the inputs.
+3. **A TransformerDecoder**: It takes the encoder output and the text data sequence as inputs and tries to learn to generate the caption.
+
 ## Dataset 
-The model has been trained on 2014 Train/Val COCO dataset.
-You can download the dataset [here](https://cocodataset.org/#download). Note that test images are not required for this code to work.</br></br>
-Original dataset has 82783 train images and 40504 validation images; for each image there is a number of captions between 1 and 6. I have preprocessing the dataset per to keep only images that have exactly 5 captions. In fact, **_the model has been trained to ensure that 5 captions are assigned for each image_**. After this filtering, the final dataset has 68363 train images and 33432 validation images.</br>
-Finally, I serialized the dataset into two json files which you can find in:</br></br>
-`COCO_dataset/captions_mapping_train.json` </br>
-`COCO_dataset/captions_mapping_valid.json` </br></br>
-Each element in the _captions_mapping_train.json_ file has such a structure :</br>
-`"COCO_dataset/train2014/COCO_train2014_000000318556.jpg": ["caption1", "caption2", "caption3", "caption4", "caption5"], ...` </br></br>
-In same way in the _captions_mapping_valid.json_ :</br>
-`"COCO_dataset/val2014/COCO_val2014_000000203564.jpg": ["caption1", "caption2", "caption3", "caption4", "caption5"], ...` </br>
+
+The model has been trained on the 2014 Train/Val COCO dataset. The dataset can be downloaded [here](https://cocodataset.org/#download). 
+
+The original dataset has 82,783 train images and 40,504 validation images; for each image, there is a number of captions between 1 and 6. The dataset has been preprocessed to keep only images that have exactly 5 captions. After this filtering, the final dataset has 68,363 train images and 33,432 validation images.
+
+The preprocessed dataset is serialized into two JSON files:
+
+- `COCO_dataset/captions_mapping_train.json`
+- `COCO_dataset/captions_mapping_valid.json`
+
+Each element in the JSON files has the following structure:
+
+```json
+"COCO_dataset/train2014/COCO_train2014_000000318556.jpg": ["caption1", "caption2", "caption3", "caption4", "caption5"],
+```
+
+## API Key
+Put your wandb api key in a file called `apikey.txt` or comment out the code
+
 ## Dependencies
 I have used the following versions for code work:
-* python==3.8.8
-* tensorflow==2.4.1
-* tensorflow-gpu==2.4.1
+* python==3.11.9
+* tensorflow-macos==2.16.1
+* tensorflow-metal==1.1.0
 * numpy==1.19.1
 * h5py==2.10.0
 ## Training
@@ -28,7 +44,10 @@ To train the model you need to follow the following steps :
 1. you have to make sure that the training set images are in the folder `COCO_dataset/train2014/` and that validation set images are in `COCO_dataset/val2014/`.
 2. you have to enter all the parameters necessary for the training in the `settings.py` file.
 3. start the model training with `python3 training.py`
-
+## Inference (a few different ways)
+Run `inference.py`
+Run `./log_inference.sh`
+Run `./run_inference.sh`
 ### My settings
 For my training session, I have get best results with this `settings.py` file :
 ```python
